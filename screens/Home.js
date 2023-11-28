@@ -6,10 +6,11 @@ import { Screen } from 'react-native-screens';
 import { Welcome } from '../components';
 import Carousel from '../components/home/Carousel';
 import Heading from '../components/home/Heading';
+import ProductList from '../components/products/ProductList';
 
 const Home = () => {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <View style={styles.appBarWrapper}>
         <View style={styles.appBar}>
           <Ionicons name={'location-outline'} size={24} />
@@ -28,6 +29,7 @@ const Home = () => {
         <Welcome />
         <Carousel />
         <Heading />
+        <ProductList />
       </ScrollView>
     </SafeAreaView>
   );
