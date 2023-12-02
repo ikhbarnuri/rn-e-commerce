@@ -7,9 +7,8 @@ import { useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 
 const ProductDetails = ({ navigation }) => {
-  const rpute = useRoute();
-  const { item } = rpute.params;
-  console.log(item);
+  const route = useRoute();
+  const { item } = route.params;
   const [count, setCount] = useState(1);
 
   const countIncrementHandler = () => {

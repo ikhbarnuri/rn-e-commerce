@@ -10,7 +10,7 @@ const UseFetch = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.get('http://localhost:3000/api/products/');
+      const response = await axios.get('https://rn-e-commerce.vercel.app/api/products/');
       setData(response.data);
     } catch (e) {
       setError(e);
