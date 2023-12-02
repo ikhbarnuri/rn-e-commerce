@@ -4,8 +4,12 @@ import styles from './productDetails.style';
 import { Fontisto, Ionicons, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants';
 import { useState } from 'react';
+import { useRoute } from '@react-navigation/native';
 
 const ProductDetails = ({ navigation }) => {
+  const rpute = useRoute();
+  const { item } = rpute.params;
+  console.log(item);
   const [count, setCount] = useState(1);
 
   const countIncrementHandler = () => {
@@ -39,9 +43,9 @@ const ProductDetails = ({ navigation }) => {
       <View style={styles.details}>
         <ScrollView style={{ flex: 1 }}>
           <View style={styles.titleRow}>
-            <Text style={styles.title}>Title</Text>
+            <Text style={styles.title}>{item.title}</Text>
             <View style={styles.priceWrapper}>
-              <Text style={styles.price}>Price</Text>
+              <Text style={styles.price}>${item.price}</Text>
             </View>
           </View>
 
@@ -71,9 +75,7 @@ const ProductDetails = ({ navigation }) => {
           <View style={styles.descriptionWrapper}>
             <Text style={styles.description}>Description</Text>
             <Text style={styles.descriptionText}>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci architecto autem commodi corporis cum
-              dignissimos dolores earum excepturi exercitationem ipsam perferendis quasi, ratione, repellendus sed
-              similique sit, tempore ullam veritatis?
+              {item.description}
             </Text>
           </View>
 
@@ -81,7 +83,7 @@ const ProductDetails = ({ navigation }) => {
             <View style={styles.location}>
               <View style={{ flexDirection: 'row' }}>
                 <Ionicons name={'locate-outline'} size={20} />
-                <Text> Dallas</Text>
+                <Text> {item.location}</Text>
               </View>
 
               <View style={{ flexDirection: 'row' }}>
