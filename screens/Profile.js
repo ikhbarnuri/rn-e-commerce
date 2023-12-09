@@ -8,7 +8,7 @@ import { AntDesign, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector
 
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
-  const [userLogin, setUserLogin] = useState(true);
+  const [userLogin, setUserLogin] = useState(false);
 
   const logout = () => {
     Alert.alert(
@@ -117,7 +117,7 @@ const Profile = ({ navigation }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('Cart')}>
-                <View style={styles.menuItem(0.3)}>
+                  <View style={styles.menuItem(0.3)}>
                     <SimpleLineIcons
                       name={'bag'}
                       size={24}
