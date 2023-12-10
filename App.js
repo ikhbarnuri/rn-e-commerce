@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabNavigation from './navigation/BottomTabNavigation';
 import { Cart, Favorites, Login, NewRivals, Orders, ProductDetails } from './screens';
+import SignUp from './screens/SignUp';
 
 const Stack = createNativeStackNavigator();
 
@@ -84,6 +85,14 @@ export default function App() {
         <Stack.Screen
           name={'Favorites'}
           component={Favorites}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name={'SignUp'}
+          component={SignUp}
           options={{
             headerShown: false,
           }}

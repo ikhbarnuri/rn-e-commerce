@@ -1,14 +1,51 @@
 import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './profile.style';
 import { StatusBar } from 'expo-status-bar';
 import { COLORS } from '../constants';
 import { AntDesign, MaterialCommunityIcons, SimpleLineIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
+
+  useEffect(() => {
+    checkExistingUser();
+  }, []);
+
+  const checkExistingUser = async () => {
+    const id = await AsyncStorage.getItem('id');
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      const currentUser = await AsyncStorage.getItem(userId);
+
+      if (currentUser !== null) {
+        const parseData = JSON.parse(currentUser);
+        setUserData(parseData);
+        setUserLogin(true);
+      } else {
+        navigation.navigate('Login');
+      }
+    } catch (e) {
+      console.log('Error retrieving the data:', e);
+    }
+  };
+
+  const userLogout = async () => {
+    const id = await AsyncStorage.getItem('id');
+    const userId = `user${JSON.parse(id)}`;
+
+    try {
+      await AsyncStorage.multiRemove([userId, 'id']);
+      console.log('logout');
+      navigation.navigate('Bottom Navigation');
+    } catch (e) {
+      console.log('Error retrieving the data:', e);
+    }
+  };
 
   const logout = () => {
     Alert.alert(
@@ -21,10 +58,9 @@ const Profile = ({ navigation }) => {
         },
         {
           text: 'Continue',
-          onPress: () => console.log('continue pressed'),
+          onPress: userLogout,
         },
       ],
-      { defaultIndex: 1 },
     );
   };
 
@@ -75,7 +111,7 @@ const Profile = ({ navigation }) => {
           <View style={styles.profileContainer}>
             <Image source={require('../assets/images/profile.jpeg')} style={styles.profile} />
             <Text style={styles.name}>
-              {userLogin === true ? 'John Doe' : 'Please login into your account'}
+              {userLogin === true ? userData.username : 'Please login into your account'}
             </Text>
 
             {userLogin === false ? (
@@ -86,7 +122,7 @@ const Profile = ({ navigation }) => {
               </TouchableOpacity>
             ) : (
               <View style={styles.loginBtn}>
-                <Text style={styles.menuText}>john@gmail.com</Text>
+                <Text style={styles.menuText}>{userData.email}</Text>
               </View>
             )}
 

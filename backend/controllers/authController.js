@@ -16,19 +16,24 @@ module.exports = {
       await newUser.save();
       res.status(201).json({ message: 'user successfully created' });
     } catch (e) {
-      res.status(500)
+      res.status(500);
     }
   },
 
   loginUser: async (req, res) => {
     try {
       const user = await User.findOne({ email: req.body.email });
-      !user && res.status(401).json('wrong credentials provide a valid email');
+
+      if (!user) {
+        return res.status(401).json('wrong credentials provide a valid email');
+      }
 
       const decryptedPassword = CryptoJS.AES.decrypt(user.password, 'rn-e-commerce');
       const decryptedPass = decryptedPassword.toString(CryptoJS.enc.Utf8);
 
-      decryptedPass !== req.body.password && res.status(401).json('wrong password');
+      if (decryptedPass !== req.body.password) {
+        return res.status(401).json('wrong password');
+      }
 
       const userToken = JWT.sign(
         { id: user.id },
@@ -40,7 +45,7 @@ module.exports = {
 
       res.status(200).json({ ...others, token: userToken });
     } catch (e) {
-      res.status(500)
+      res.status(500);
     }
   },
 };

@@ -6,87 +6,38 @@ import styles from './login.style';
 import Button from '../components/Button';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS } from '../constants';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const validationSchema = Yup.object().shape({
   password: Yup.string().min(8, 'Password must be at least 8 character').required('Required'),
   email: Yup.string().email('Provide a valid email address').required('Required'),
+  location: Yup.string().min(3, 'Provide a valid address').required('Required'),
+  username: Yup.string().min(3, 'Provide a valid username').required('Required'),
 });
 
-const Login = ({ navigation }) => {
+const invalidForm = () => {
+  Alert.alert(
+    'Invalid Form',
+    'Please provide all required fields',
+    [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('cancel'),
+      },
+      {
+        text: 'Continue',
+        onPress: () => console.log('continue'),
+      },
+    ],
+  );
+};
+
+const SignUp = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const [obsecure, setObsecure] = useState(true);
 
-  const invalidForm = () => {
-    Alert.alert(
-      'Invalid Form',
-      'Please provide all required fields',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('cancel'),
-        },
-        {
-          text: 'Continue',
-          onPress: () => console.log('continue'),
-        },
-      ],
-    );
-  };
-
-  const login = async (values) => {
-    console.log(values);
-
-    try {
-      const endpoint = 'https://rn-e-commerce.vercel.app/api/login';
-      const response = await axios.post(endpoint, values);
-
-      if (response.status === 200) {
-        setResponseData(response.data);
-
-        await AsyncStorage.setItem(`user${responseData._id}`, JSON.stringify(responseData));
-        await AsyncStorage.setItem(`id`, JSON.stringify(responseData._id));
-        navigation.replace('Bottom Navigation');
-      } else {
-        Alert.alert(
-          'Error Logging In',
-          'Please provide valid credentials',
-          [
-            {
-              text: 'Cancel',
-              onPress: () => console.log('cancel'),
-            },
-            {
-              text: 'Continue',
-              onPress: () => console.log('continue'),
-            },
-          ],
-        );
-      }
-    } catch (e) {
-      Alert.alert(
-        'Error Logging In',
-        'Oops, Error logging in try again',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => {
-            },
-          },
-          {
-            text: 'Continue',
-            onPress: () => console.log('continue'),
-          },
-        ],
-      );
-    } finally {
-      setLoader(false);
-    }
-  };
 
   return (
     <ScrollView>
@@ -102,10 +53,36 @@ const Login = ({ navigation }) => {
           <Formik
             initialValues={{ email: '', password: '' }}
             validationSchema={validationSchema}
-            onSubmit={(values) => login(values)}
+            onSubmit={(values) => console.log(values)}
           >
             {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldTouched, touched }) => (
               <View>
+                <View style={styles.wrapper}>
+                  <Text style={styles.label}>Username</Text>
+                  <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
+                    <MaterialCommunityIcons
+                      name={'face-man-profile'}
+                      size={20}
+                      color={COLORS.gray}
+                      style={styles.iconStyle}
+                    />
+
+                    <TextInput
+                      placeholder={'Enter username'}
+                      onFocus={() => setFieldTouched('username')}
+                      onBlur={() => setFieldTouched('username', '')}
+                      value={values.username}
+                      onChangeText={handleChange('username')}
+                      autoCapitalize={'none'}
+                      autoComplete={'off'}
+                      style={{ flex: 1 }}
+                    />
+                  </View>
+                  {touched.username && errors.username && (
+                    <Text style={styles.errorMessage}>{errors.username}</Text>
+                  )}
+                </View>
+
                 <View style={styles.wrapper}>
                   <Text style={styles.label}>Email</Text>
                   <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
@@ -129,6 +106,33 @@ const Login = ({ navigation }) => {
                   </View>
                   {touched.email && errors.email && (
                     <Text style={styles.errorMessage}>{errors.email}</Text>
+                  )}
+                </View>
+
+                <View style={styles.wrapper}>
+                  <Text style={styles.label}>Location</Text>
+                  <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
+                    <Ionicons
+                      name={'location'}
+                      size={20}
+                      color={COLORS.gray}
+                      style={styles.iconStyle}
+                    />
+
+                    <TextInput
+                      secureTextEntry={obsecure}
+                      placeholder={'Enter location'}
+                      onFocus={() => setFieldTouched('location')}
+                      onBlur={() => setFieldTouched('location', '')}
+                      value={values.location}
+                      onChangeText={handleChange('location')}
+                      autoCapitalize={'none'}
+                      autoComplete={'off'}
+                      style={{ flex: 1 }}
+                    />
+                  </View>
+                  {touched.location && errors.location && (
+                    <Text style={styles.errorMessage}>{errors.location}</Text>
                   )}
                 </View>
 
@@ -167,20 +171,20 @@ const Login = ({ navigation }) => {
                 </View>
 
                 <Button
-                  loader={loader}
-                  title={'L O G I N'}
+                  title={'S I G N U P'}
                   onPress={isValid ? handleSubmit : invalidForm}
-                  isValid={isValid} />
+                  isValid={isValid}
+                  loader={loader}
+                />
 
-                <Text style={styles.registration} onPress={() => navigation.navigate('SignUp')}>Regisetr</Text>
+                <Text style={styles.registration} onPress={() => navigation.navigate('Login')}>Login</Text>
               </View>
             )}
           </Formik>
         </View>
       </SafeAreaView>
     </ScrollView>
-  )
-    ;
+  );
 };
 
-export default Login;
+export default SignUp;
